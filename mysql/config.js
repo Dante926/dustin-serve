@@ -7,13 +7,4 @@ var dbconfig = mysql.createConnection({
     database: 'dustin-db'
 });
 
-// 测试连接
-dbconfig.connect(function (err) {
-    if (err) {
-        console.log('MySql is Connection Fail');
-    } else {
-        console.log('MySql is Connection Success');
-    }
-});
-
 module.exports = dbconfig;
