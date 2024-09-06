@@ -3,7 +3,6 @@ const db = require('../mysql/config');
 const logs_handle = {
     login: (req, res) => {
         const { Phone } = req.body;
-        console.log(Phone);
         const sqlStr = 'select * from UserManageTable where Phone = ?'
         db.query(sqlStr, [Phone], (err, result) => {
             if (err) return res.send({ code: 500, data: err })

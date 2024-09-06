@@ -15,6 +15,9 @@ app.use(bodyParser.json());
 const logsRouter = require('./router/logs')
 app.use('/logs',logsRouter)
 
+// 用户余额接口
+const balanceRouter = require('./router/balance')
+app.use('/balance',balanceRouter)
 
 app.listen(8088, () => {
     console.log('Server is running http://127.0.0.1:8088')
