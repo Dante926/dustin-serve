@@ -54,6 +54,13 @@ const pkup_handle = {
         } finally {
             connection.release(); // 释放连接，无论成功或失败都需要执行
         }
+    },
+
+    pullorder: async (req, res) => {
+        const { phone } = req.body;
+        const sqlStr = 'SELECT * FROM ordertable WHERE phone = ?';
+        const [result] = await db.query(sqlStr, [phone]);
+        return res.send(result);
     }
 
 }
