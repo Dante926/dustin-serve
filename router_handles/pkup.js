@@ -57,11 +57,16 @@ const pkup_handle = {
     },
 
     pullorder: async (req, res) => {
-        const { phone, power } = req.body;
+        const { phone, power,manage_eq_id } = req.body;
         if (power === 2) {
             const sqlStr = 'SELECT * FROM ordertable ORDER BY date DESC';
             const [result] = await db.query(sqlStr);
             return res.send(result);
+        } else if (power === 1) {
+            const sqlStr = 'SELECT * FROM ordertable WHERE pickup_id = ?  ORDER BY date DESC';
+            const [result] = await db.query(sqlStr, [manage_eq_id]);
+            return res.send(result);
+            
         } else {
             const sqlStr = 'SELECT * FROM ordertable WHERE phone = ? ORDER BY date DESC';
             const [result] = await db.query(sqlStr, [phone]);
