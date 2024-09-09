@@ -20,11 +20,30 @@ const equipment_handle = {
             if (err) {
                 return res.status(500).send({ err });
             } else {
-                res.send({message:`此次补给数为${50-total}`});
+                res.send({ message: `此次补给数为${50 - total}` });
+            }
+        });
+    },
+
+    changestatus: (req, res) => {
+        const { pickup_id, ispay_flag, set_mone, paper_fre } = req.body;
+        console.log(pickup_id, ispay_flag, set_mone, paper_fre);
+
+        // 修正了 SQL 语句的语法
+        const sqlStr = `
+            UPDATE eq_status 
+            SET ispay_flag = ?, set_mone = ?, paper_fre = ? 
+            WHERE pickup_id = ?
+        `;
+
+        db.query(sqlStr, [ispay_flag, set_mone, paper_fre, pickup_id], (err, result) => {
+            if (err) {
+                return res.status(500).send({ err });
+            } else {
+                res.send({ message: 'Success' });
             }
         });
     }
-
 }
 
 module.exports = equipment_handle
