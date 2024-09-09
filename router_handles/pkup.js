@@ -57,10 +57,16 @@ const pkup_handle = {
     },
 
     pullorder: async (req, res) => {
-        const { phone } = req.body;
-        const sqlStr = 'SELECT * FROM ordertable WHERE phone = ? ORDER BY date DESC';
-        const [result] = await db.query(sqlStr, [phone]);
-        return res.send(result);
+        const { phone, power } = req.body;
+        if (power === 2) {
+            const sqlStr = 'SELECT * FROM ordertable ORDER BY date DESC';
+            const [result] = await db.query(sqlStr);
+            return res.send(result);
+        } else {
+            const sqlStr = 'SELECT * FROM ordertable WHERE phone = ? ORDER BY date DESC';
+            const [result] = await db.query(sqlStr, [phone]);
+            return res.send(result);
+        }
     }
 
 }
