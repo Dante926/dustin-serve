@@ -27,7 +27,9 @@ app.use('/equipment', equipmentRouter)
 const pkupRouter = require('./router/pkup')
 app.use('/pkup', pkupRouter)
 
-// 超级管理员模块
+// 超级管理员/申请租赁 模块
+const adminRouter = require('./router/admin')
+app.use('/admin', adminRouter)
 
 app.listen(8088, () => {
     console.log('Server is running http://127.0.0.1:8088')

@@ -12,7 +12,6 @@ const db = mysql.createPool({
 const pkup_handle = {
     confirm_pkup: async (req, res) => {
         const { phone, pickup_id, price } = req.body;
-        console.log(phone, pickup_id, price);
 
         const date = new Date();
         const connection = await db.getConnection(); // 获取数据库连接
