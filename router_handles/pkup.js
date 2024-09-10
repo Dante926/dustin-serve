@@ -63,8 +63,8 @@ const pkup_handle = {
             const [result] = await db.query(sqlStr);
             return res.send(result);
         } else if (power === 1) {
-            const sqlStr = 'SELECT * FROM ordertable WHERE pickup_id = ?  ORDER BY date DESC';
-            const [result] = await db.query(sqlStr, [manage_eq_id]);
+            const sqlStr = 'SELECT * FROM ordertable WHERE pickup_id = ? OR phone = ? ORDER BY date DESC';
+            const [result] = await db.query(sqlStr, [manage_eq_id,phone]);
             return res.send(result);
             
         } else {
