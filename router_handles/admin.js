@@ -52,6 +52,71 @@ const admin_handle = {
             connection.release(); // 释放连接，无论成功或失败都需要执行
         }
     },
+
+    pullapplication: async (req, res) => {
+        const connection = await db.getConnection();
+        try {
+            await connection.beginTransaction();
+            const result = await connection.query('SELECT * FROM application');
+            await connection.commit();
+            return res.send({ code: 200, message: 'Success', data: result });
+        } catch (err) {
+            await connection.rollback();
+            return res.send({ code: 500, message: err.message });
+        } finally {
+            connection.release();
+        }
+
+
+    },
+
+    agree: async (req, res) => {
+        const { phone, name, manage_eq_id } = req.body;
+        const connection = await db.getConnection();
+        try {
+            await connection.beginTransaction();
+            // ①查找是否存在申请租赁的手机号
+            const sqlStr1 = 'SELECT * FROM UserManageTable WHERE Phone = ?';
+            const [userResult] = await connection.query(sqlStr1, [phone]);
+
+            if (userResult.length === 0) {
+                return res.send({ code: 404, message: '手机号不存在' }); // 如果手机号不存在，返回错误
+            } else if (userResult[0].mone < 100) {
+                return res.send({ code: 404, message: '余额不足' });
+            }
+
+            // ②如果用户存在，且余额足够
+            const sqlStr2 = `
+                            UPDATE usermanagetable 
+                            SET mone = mone - 100, 
+                            name = ?, 
+                            power = 1,
+                            manage_eq_id = ? 
+                            WHERE phone = ?
+                            `;
+            const [updataResult] = await connection.query(sqlStr2, [name, manage_eq_id, phone]);
+            if (updataResult.affectedRows !== 1) {
+                return res.send({ code: 500, message: '更新数据失败' });
+            }
+
+            // 删除租赁申请表中的纪录
+            const sqlStr3 = `DELETE FROM application WHERE phone = ?`;
+            const [deleteResult] = await connection.query(sqlStr3, [phone]);
+            if (deleteResult.affectedRows !== 1) {
+                return res.send({ code: 500, message: '删除数据失败' });
+            }
+
+            await connection.commit();
+            return res.send({ code: 200, message: '申请成功' });
+        } catch (err) {
+            console.log(err);
+            await connection.rollback(); // 回滚事务，撤销所有更改
+            return res.send({ code: 500, message: err.message }); // 错误响应
+        } finally {
+            connection.release(); // 释放连接，无论成功或失败都需要执行
+        }
+
+    },
 }
 
 module.exports = admin_handle
